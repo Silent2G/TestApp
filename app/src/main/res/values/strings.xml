@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TestApplication</string>
+    <string name="favorite">Favorite</string>
+    <string name="podcasts">Podcasts</string>
+    <string name="movies">Movies</string>
+    <string name="audio_books">Audio books</string>
+</resources>

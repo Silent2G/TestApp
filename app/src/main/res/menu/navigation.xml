@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_audio_books"
+        android:icon="@drawable/ic_action_book"
+        android:title="@string/audio_books" />
+
+    <item
+        android:id="@+id/navigation_movies"
+        android:icon="@drawable/ic_local_movies"
+        android:title="@string/movies" />
+
+    <item
+        android:id="@+id/navigation_podcasts"
+        android:icon="@drawable/ic_play_circle_outline"
+        android:title="@string/podcasts" />
+    <item
+        android:id="@+id/navigation_favorite"
+        android:icon="@drawable/ic_favorite_border"
+        android:title="@string/favorite" />
+</menu>
