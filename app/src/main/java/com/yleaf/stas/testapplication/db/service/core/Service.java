@@ -6,5 +6,6 @@ public interface Service<T> {
     void save(T t);
     void deleteAll();
     void deleteById(int id);
+    boolean isEmpty();
     List<T> getAll();
 }

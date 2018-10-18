@@ -1,5 +1,6 @@
 package com.yleaf.stas.testapplication.activities;
 
+import android.content.Context;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +10,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.yleaf.stas.testapplication.R;
+import com.yleaf.stas.testapplication.db.service.BookService;
+import com.yleaf.stas.testapplication.db.service.FavoriteService;
+import com.yleaf.stas.testapplication.db.service.MovieService;
+import com.yleaf.stas.testapplication.db.service.PodcastService;
 import com.yleaf.stas.testapplication.fragments.AudioBooksFragment;
 import com.yleaf.stas.testapplication.fragments.FavoriteFragment;
 import com.yleaf.stas.testapplication.fragments.MoviesFragment;
@@ -32,18 +37,21 @@ public class MainActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private ArrayList<Data> audioBooks = new ArrayList<>();
-    private ArrayList<Data> movies = new ArrayList<>();
-    private ArrayList<Data> podcasts = new ArrayList<>();
-
     private AtomicInteger counter = new AtomicInteger();
+    private Context appContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        appContext = getApplicationContext();
+
         initViews();
-        getData();
+
+        if(isTablesEmpty()){
+            getData();
+        }
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             Fragment selectedFragment = null;
@@ -71,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
             return true;
         });
+
+    }
+
+    private boolean isTablesEmpty() {
+        return new BookService(appContext).isEmpty() && new FavoriteService(appContext).isEmpty()
+                && new MovieService(appContext).isEmpty() && new PodcastService(appContext).isEmpty();
     }
 
     private void getData() {
@@ -79,16 +93,16 @@ public class MainActivity extends AppCompatActivity {
         APIService apiService = retrofit.create(APIService.class);
 
         Call<JSONResponse> audioBooksResponse = apiService.getAudioBooks();
-        parseData(audioBooksResponse);
+        parseAndStoreData(audioBooksResponse);
 
         Call<JSONResponse> moviesResponse = apiService.getMovies();
-        parseData(moviesResponse);
+        parseAndStoreData(moviesResponse);
 
         Call<JSONResponse> podcastsResponse = apiService.getPodcasts();
-        parseData(podcastsResponse);
+        parseAndStoreData(podcastsResponse);
     }
 
-    private void parseData(Call<JSONResponse> jsonResponseCall) {
+    private void parseAndStoreData(Call<JSONResponse> jsonResponseCall) {
 
         jsonResponseCall.enqueue(new Callback<JSONResponse>() {
             @Override
@@ -106,19 +120,26 @@ public class MainActivity extends AppCompatActivity {
                         String artworkUrl100 = results.get(i).getArtworkUrl100();
 
                         switch (kind) {
-                            case "book": audioBooks.add(new Data(id, kind, artistName, name, artworkUrl100));
+                            case "book":
+                                new BookService(getBaseContext()).save(new Data(id, kind, artistName, name, artworkUrl100));
                                 break;
 
-                            case "movie": movies.add(new Data(id, kind, artistName, name, artworkUrl100));
+                            case "movie":
+                                new MovieService(getBaseContext()).save(new Data(id, kind, artistName, name, artworkUrl100));
                                 break;
 
-                            case "podcast": podcasts.add(new Data(id, kind, artistName, name, artworkUrl100));
+                            case "podcast":
+                                new PodcastService(getBaseContext()).save(new Data(id, kind, artistName, name, artworkUrl100));
                                 break;
                         }
                     }
 
                     if(counter.incrementAndGet() == 3) {
-                        Log.i("SIZES", audioBooks.size() + " " + movies.size() + " " + podcasts.size());
+
+                        //Manually displaying the first fragment - one time only
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frame_layout, AudioBooksFragment.newInstance());
+                        transaction.commit();
                     }
                 }
             }

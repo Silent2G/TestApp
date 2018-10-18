@@ -4,4 +4,6 @@
     <string name="podcasts">Podcasts</string>
     <string name="movies">Movies</string>
     <string name="audio_books">Audio books</string>
+    <string name="add_to_favorite">Add to favorite</string>
+    <string name="delete_from_favorite">Delete from favorite</string>
 </resources>

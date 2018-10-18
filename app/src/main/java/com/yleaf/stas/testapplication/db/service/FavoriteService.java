@@ -2,6 +2,7 @@ package com.yleaf.stas.testapplication.db.service;
 
 import android.content.Context;
 
+import com.yleaf.stas.testapplication.db.dao.FavoriteDAO;
 import com.yleaf.stas.testapplication.db.service.core.OpenDBService;
 import com.yleaf.stas.testapplication.db.service.core.Service;
 import com.yleaf.stas.testapplication.models.Data;
@@ -16,21 +17,86 @@ public class FavoriteService extends OpenDBService implements Service<Data> {
 
     @Override
     public void save(Data data) {
+        try {
+            if(!isOpen()) {
+                open();
+            }
 
+            // save
+            new FavoriteDAO(getSqLiteDatabase()).save(data);
+
+        } finally {
+            if(isOpen()) {
+                close();
+            }
+        }
     }
 
     @Override
     public void deleteAll() {
+        try {
+            if(!isOpen()) {
+                open();
+            }
 
+            // delete all records
+            new FavoriteDAO(getSqLiteDatabase()).deleteAll();
+
+        } finally {
+            if(isOpen()) {
+                close();
+            }
+        }
     }
 
     @Override
     public void deleteById(int id) {
+        try {
+            if(!isOpen()) {
+                open();
+            }
 
+            // delete record by id
+            new FavoriteDAO(getSqLiteDatabase()).deleteById(id);
+
+        } finally {
+            if(isOpen()) {
+                close();
+            }
+        }
     }
 
     @Override
     public List<Data> getAll() {
-        return null;
+        try {
+            if(!isOpen()) {
+                open();
+            }
+
+            // get all
+            return new FavoriteDAO(getSqLiteDatabase()).getAll();
+
+        } finally {
+            if(isOpen()) {
+                close();
+            }
+        }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        try {
+            if(!isOpen()) {
+                open();
+            }
+
+            // is table empty
+            return new FavoriteDAO(getSqLiteDatabase()).isEmpty();
+
+        } finally {
+            if(isOpen()) {
+                close();
+            }
+        }
     }
 }

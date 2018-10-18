@@ -8,6 +8,7 @@ public interface DAO<T> {
     void save(T t);
     void deleteById(int id);
     void deleteAll();
+    boolean isEmpty();
     List<T> getAll();
     List<T> parseCursor(Cursor cursor);
 }
