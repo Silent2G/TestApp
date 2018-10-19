@@ -1,4 +1,4 @@
-package com.yleaf.stas.testapplication.fragments;
+package com.yleaf.stas.testapplication.fragments.tabs;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,10 +13,9 @@ import android.widget.TextView;
 
 import com.yleaf.stas.testapplication.R;
 import com.yleaf.stas.testapplication.adapter.DataAdapter;
-import com.yleaf.stas.testapplication.db.service.PodcastService;
+import com.yleaf.stas.testapplication.db.service.FavoriteService;
 
-
-public class PodcastsFragment extends Fragment {
+public class AudioBooksFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private DataAdapter dataAdapter;
@@ -31,34 +30,27 @@ public class PodcastsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_podcasts, container, false);
+        View view = inflater.inflate(R.layout.fragment_audio_books, container, false);
 
-        placeHolderGroupName = view.findViewById(R.id.text_view_group_name_podcasts);
-        placeHolderContent = view.findViewById(R.id.text_view_content_podcasts);
+        placeHolderGroupName = view.findViewById(R.id.text_view_group_name_audio_books);
+        placeHolderContent = view.findViewById(R.id.text_view_content_audio_books);
 
-        recyclerView = view.findViewById(R.id.recycler_view_podcasts);
+        recyclerView = view.findViewById(R.id.recycler_view_audio_books);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        hidePlaceHolder();
+      //  hidePlaceHolder();
 
-        dataAdapter = new DataAdapter(new PodcastService(getActivity()).getAll(), getActivity());
+        dataAdapter = new DataAdapter(new FavoriteService(getActivity()).getAllByKind("book"), getActivity());
         recyclerView.setAdapter(dataAdapter);
 
         return view;
     }
 
-    private void hidePlaceHolder() {
-        if(!new PodcastService(getActivity()).isEmpty()) {
-            placeHolderGroupName.setVisibility(View.INVISIBLE);
-            placeHolderContent.setVisibility(View.INVISIBLE);
-        }
-    }
+    public static AudioBooksFragment newInstance() {
 
-    public static PodcastsFragment newInstance() {
-        
         Bundle args = new Bundle();
-        
-        PodcastsFragment fragment = new PodcastsFragment();
+
+        AudioBooksFragment fragment = new AudioBooksFragment();
         fragment.setArguments(args);
         return fragment;
     }

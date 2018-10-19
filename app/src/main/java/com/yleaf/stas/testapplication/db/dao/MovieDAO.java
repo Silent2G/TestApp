@@ -98,4 +98,9 @@ public class MovieDAO implements DAO<Data> {
         }
         return empty;
     }
+
+    @Override
+    public List<Data> getAllByKind(String kind) {
+        return null;
+    }
 }

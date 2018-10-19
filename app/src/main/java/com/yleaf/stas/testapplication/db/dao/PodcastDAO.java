@@ -87,7 +87,7 @@ public class PodcastDAO implements DAO<Data> {
     public boolean isEmpty() {
         boolean empty = true;
         Cursor cursor = sqLiteDatabase.rawQuery(
-                "select count(*) from " + Resource.Movie.TABLE_NAME,
+                "select count(*) from " + Resource.Podcast.TABLE_NAME,
                 null);
         if(cursor != null && cursor.moveToFirst()) {
             empty = (cursor.getInt(0) == 0);
@@ -97,5 +97,10 @@ public class PodcastDAO implements DAO<Data> {
             cursor.close();
         }
         return empty;
+    }
+
+    @Override
+    public List<Data> getAllByKind(String kind) {
+        return null;
     }
 }

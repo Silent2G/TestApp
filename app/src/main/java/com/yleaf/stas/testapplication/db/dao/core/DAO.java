@@ -9,6 +9,7 @@ public interface DAO<T> {
     void deleteById(int id);
     void deleteAll();
     boolean isEmpty();
+    List<T> getAllByKind(String kind);
     List<T> getAll();
     List<T> parseCursor(Cursor cursor);
 }

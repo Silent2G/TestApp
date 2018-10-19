@@ -99,4 +99,21 @@ public class FavoriteService extends OpenDBService implements Service<Data> {
             }
         }
     }
+
+    @Override
+    public List<Data> getAllByKind(String kind) {
+        try {
+            if(!isOpen()) {
+                open();
+            }
+
+            // get all records with current kind
+            return new FavoriteDAO(getSqLiteDatabase()).getAllByKind(kind);
+
+        } finally {
+            if(isOpen()) {
+                close();
+            }
+        }
+    }
 }

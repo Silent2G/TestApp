@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".fragments.FavoriteFragment">
 
     <android.support.v7.widget.RecyclerView
@@ -14,7 +15,7 @@
     </android.support.v7.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/text_view_content_favorite"
+        android:id="@+id/text_view_group_name_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -24,10 +25,10 @@
         android:textSize="40sp" />
 
     <TextView
-        android:id="@+id/text_view_group_name_favorite"
+        android:id="@+id/text_view_content_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text_view_content_favorite"
+        android:layout_below="@+id/text_view_group_name_favorite"
         android:layout_centerHorizontal="true"
         android:text="No content here"
         android:textSize="30sp" />

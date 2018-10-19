@@ -1,12 +1,15 @@
 package com.yleaf.stas.testapplication.activities;
 
 import android.content.Context;
+import android.os.PersistableBundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.yleaf.stas.testapplication.R;
@@ -39,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
     private AtomicInteger counter = new AtomicInteger();
     private Context appContext;
+    private ProgressBar progressBar;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +58,14 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
 
-        if(isTablesEmpty()){
-            getData();
+        if(savedInstanceState == null) {
+            if(isTablesEmpty()) {
+                getData();
+            } else {
+                startFirstFragment();
+            }
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
         }
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -80,6 +95,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+    }
+
+    private void startFirstFragment() {
+        progressBar.setVisibility(View.INVISIBLE);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_layout, AudioBooksFragment.newInstance());
+        transaction.commit();
     }
 
     private boolean isTablesEmpty() {
@@ -135,11 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if(counter.incrementAndGet() == 3) {
-
-                        //Manually displaying the first fragment - one time only
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_layout, AudioBooksFragment.newInstance());
-                        transaction.commit();
+                        startFirstFragment();
                     }
                 }
             }
@@ -154,5 +173,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        progressBar = findViewById(R.id.progress_bar);
     }
 }

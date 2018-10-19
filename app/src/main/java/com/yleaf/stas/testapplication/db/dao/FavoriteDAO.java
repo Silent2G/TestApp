@@ -98,4 +98,14 @@ public class FavoriteDAO implements DAO<Data> {
         }
         return empty;
     }
+
+    @Override
+    public List<Data> getAllByKind(String kind) {
+        Cursor cursor = sqLiteDatabase.rawQuery(
+                "select * from "
+                        + Resource.Favorite.TABLE_NAME + " where " + Resource.Favorite.KIND + " = " + kind,
+                null);
+
+        return parseCursor(cursor);
+    }
 }
