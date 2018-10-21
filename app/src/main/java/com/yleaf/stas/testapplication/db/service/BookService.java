@@ -7,6 +7,7 @@ import com.yleaf.stas.testapplication.db.service.core.OpenDBService;
 import com.yleaf.stas.testapplication.db.service.core.Service;
 import com.yleaf.stas.testapplication.models.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookService extends OpenDBService implements Service<Data> {
@@ -67,7 +68,7 @@ public class BookService extends OpenDBService implements Service<Data> {
     }
 
     @Override
-    public List<Data> getAll() {
+    public ArrayList<Data> getAll() {
         try {
             if(!isOpen()) {
                 open();
@@ -92,23 +93,6 @@ public class BookService extends OpenDBService implements Service<Data> {
 
             // is table empty
             return new BookDAO(getSqLiteDatabase()).isEmpty();
-
-        } finally {
-            if(isOpen()) {
-                close();
-            }
-        }
-    }
-
-    @Override
-    public List<Data> getAllByKind(String kind) {
-        try {
-            if(!isOpen()) {
-                open();
-            }
-
-            // get all records with current kind
-            return new BookDAO(getSqLiteDatabase()).getAllByKind(kind);
 
         } finally {
             if(isOpen()) {

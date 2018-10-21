@@ -7,6 +7,5 @@ public interface Service<T> {
     void deleteAll();
     void deleteById(int id);
     boolean isEmpty();
-    List<T> getAllByKind(String kind);
     List<T> getAll();
 }

@@ -11,13 +11,14 @@ import com.yleaf.stas.testapplication.R;
 import com.yleaf.stas.testapplication.holder.DataHolder;
 import com.yleaf.stas.testapplication.models.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataAdapter extends RecyclerView.Adapter<DataHolder> {
-    public List<Data> dataList;
+    public ArrayList<Data> dataList;
     private Context context;
 
-    public DataAdapter(List<Data> data, Context context) {
+    public DataAdapter(ArrayList<Data> data, Context context) {
         this.dataList = data;
         this.context = context;
     }

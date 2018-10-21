@@ -52,7 +52,7 @@ public class MovieDAO implements DAO<Data> {
     }
 
     @Override
-    public List<Data> getAll() {
+    public ArrayList<Data> getAll() {
         Cursor cursor = sqLiteDatabase.rawQuery(
                 "select * from "
                         + Resource.Movie.TABLE_NAME,
@@ -62,8 +62,8 @@ public class MovieDAO implements DAO<Data> {
     }
 
     @Override
-    public List<Data> parseCursor(Cursor cursor) {
-        List<Data> movies = new ArrayList<>();
+    public ArrayList<Data> parseCursor(Cursor cursor) {
+        ArrayList<Data> movies = new ArrayList<>();
         if(cursor != null && cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndex(Resource.Movie.ID));
@@ -97,10 +97,5 @@ public class MovieDAO implements DAO<Data> {
             cursor.close();
         }
         return empty;
-    }
-
-    @Override
-    public List<Data> getAllByKind(String kind) {
-        return null;
     }
 }

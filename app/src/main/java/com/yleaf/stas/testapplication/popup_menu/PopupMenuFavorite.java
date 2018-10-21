@@ -69,9 +69,27 @@ public class PopupMenuFavorite {
     }
 
     private void showPlaceHolder() {
-        if(new FavoriteService(context).isEmpty()) {
-            (((Activity) context).findViewById(R.id.text_view_group_name_favorite)).setVisibility(View.VISIBLE);
-            (((Activity) context).findViewById(R.id.text_view_content_favorite)).setVisibility(View.VISIBLE);
+        switch (data.getKind()) {
+            case "book":
+                if(new FavoriteService(context).isEmptyCurrentKind("book")) {
+                    (((Activity) context).findViewById(R.id.text_view_group_name_audio_books)).setVisibility(View.VISIBLE);
+                    (((Activity) context).findViewById(R.id.text_view_content_audio_books)).setVisibility(View.VISIBLE);
+                }
+                break;
+
+            case "movie":
+                if(new FavoriteService(context).isEmptyCurrentKind("movie")) {
+                    (((Activity) context).findViewById(R.id.text_view_group_name_movies)).setVisibility(View.VISIBLE);
+                    (((Activity) context).findViewById(R.id.text_view_content_movies)).setVisibility(View.VISIBLE);
+                }
+                break;
+
+            case "podcast":
+                if(new FavoriteService(context).isEmptyCurrentKind("podcast")) {
+                    (((Activity) context).findViewById(R.id.text_view_group_name_podcasts)).setVisibility(View.VISIBLE);
+                    (((Activity) context).findViewById(R.id.text_view_content_podcasts)).setVisibility(View.VISIBLE);
+                }
+                break;
         }
     }
 

@@ -51,7 +51,7 @@ public class BookDAO implements DAO<Data> {
     }
 
     @Override
-    public List<Data> getAll() {
+    public ArrayList<Data> getAll() {
         Cursor cursor = sqLiteDatabase.rawQuery(
                 "select * from " + Resource.Book.TABLE_NAME,
                 null);
@@ -60,8 +60,8 @@ public class BookDAO implements DAO<Data> {
     }
 
     @Override
-    public List<Data> parseCursor(Cursor cursor) {
-        List<Data> books = new ArrayList<>();
+    public ArrayList<Data> parseCursor(Cursor cursor) {
+        ArrayList<Data> books = new ArrayList<>();
         if(cursor != null && cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndex(Resource.Book.ID));
@@ -95,10 +95,5 @@ public class BookDAO implements DAO<Data> {
             cursor.close();
         }
         return empty;
-    }
-
-    @Override
-    public List<Data> getAllByKind(String kind) {
-        return null;
     }
 }

@@ -100,7 +100,6 @@ public class FavoriteService extends OpenDBService implements Service<Data> {
         }
     }
 
-    @Override
     public List<Data> getAllByKind(String kind) {
         try {
             if(!isOpen()) {
@@ -109,6 +108,38 @@ public class FavoriteService extends OpenDBService implements Service<Data> {
 
             // get all records with current kind
             return new FavoriteDAO(getSqLiteDatabase()).getAllByKind(kind);
+
+        } finally {
+            if(isOpen()) {
+                close();
+            }
+        }
+    }
+
+    public boolean isEmptyCurrentKind(String kind) {
+        try {
+            if(!isOpen()) {
+                open();
+            }
+
+            // is table include current kind objects
+            return new FavoriteDAO(getSqLiteDatabase()).isEmptyCurrentKind(kind);
+
+        } finally {
+            if(isOpen()) {
+                close();
+            }
+        }
+    }
+
+    public boolean isObjectStored(int id) {
+        try {
+            if(!isOpen()) {
+                open();
+            }
+
+            // is object stored
+            return new FavoriteDAO(getSqLiteDatabase()).isObjectStored(id);
 
         } finally {
             if(isOpen()) {

@@ -99,13 +99,44 @@ public class FavoriteDAO implements DAO<Data> {
         return empty;
     }
 
-    @Override
     public List<Data> getAllByKind(String kind) {
         Cursor cursor = sqLiteDatabase.rawQuery(
                 "select * from "
-                        + Resource.Favorite.TABLE_NAME + " where " + Resource.Favorite.KIND + " = " + kind,
+                        + Resource.Favorite.TABLE_NAME + " where " + Resource.Favorite.KIND + "='" + kind + "'",
                 null);
 
         return parseCursor(cursor);
+    }
+
+    public boolean isEmptyCurrentKind(String kind) {
+        boolean empty = true;
+        Cursor cursor = sqLiteDatabase.rawQuery(
+                "select count(*) from "
+                        + Resource.Favorite.TABLE_NAME + " where " + Resource.Favorite.KIND + "='" + kind + "'",
+                null);
+        if(cursor != null && cursor.moveToFirst()) {
+            empty = (cursor.getInt(0) == 0);
+        }
+
+        if(cursor != null) {
+            cursor.close();
+        }
+        return empty;
+    }
+
+    public boolean isObjectStored(int id) {
+        boolean stored = false;
+        Cursor cursor = sqLiteDatabase.rawQuery(
+                "select count(*) from "
+                        + Resource.Favorite.TABLE_NAME + " where " + Resource.Favorite.ID + "='" + id + "'",
+                null);
+        if(cursor != null && cursor.moveToFirst()) {
+            stored = (cursor.getInt(0) == 1);
+        }
+
+        if(cursor != null) {
+            cursor.close();
+        }
+        return stored;
     }
 }

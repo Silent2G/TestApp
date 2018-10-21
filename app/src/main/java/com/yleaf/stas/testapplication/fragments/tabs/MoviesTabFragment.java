@@ -12,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yleaf.stas.testapplication.R;
-import com.yleaf.stas.testapplication.adapter.DataAdapter;
+import com.yleaf.stas.testapplication.adapter.DataAdapterFavorite;
 import com.yleaf.stas.testapplication.db.service.FavoriteService;
 
-public class AudioBooksFragment extends Fragment {
+public class MoviesTabFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private DataAdapter dataAdapter;
+    private DataAdapterFavorite dataAdapterFavorite;
     private TextView placeHolderGroupName;
     private TextView placeHolderContent;
 
@@ -30,27 +30,36 @@ public class AudioBooksFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_audio_books, container, false);
+        View view = inflater.inflate(R.layout.fragment_movies, container, false);
 
-        placeHolderGroupName = view.findViewById(R.id.text_view_group_name_audio_books);
-        placeHolderContent = view.findViewById(R.id.text_view_content_audio_books);
+        placeHolderGroupName = view.findViewById(R.id.text_view_group_name_movies);
+        placeHolderContent = view.findViewById(R.id.text_view_content_movies);
 
-        recyclerView = view.findViewById(R.id.recycler_view_audio_books);
+        recyclerView = view.findViewById(R.id.recycler_view_movies);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-      //  hidePlaceHolder();
+        hidePlaceHolder();
 
-        dataAdapter = new DataAdapter(new FavoriteService(getActivity()).getAllByKind("book"), getActivity());
-        recyclerView.setAdapter(dataAdapter);
+        dataAdapterFavorite = new DataAdapterFavorite(new FavoriteService(getActivity())
+                .getAllByKind(getString(R.string.db_kind_movies)), getActivity());
+
+        recyclerView.setAdapter(dataAdapterFavorite);
 
         return view;
     }
 
-    public static AudioBooksFragment newInstance() {
+    private void hidePlaceHolder() {
+        if(!new FavoriteService(getActivity()).isEmptyCurrentKind(getString(R.string.db_kind_movies))) {
+            placeHolderGroupName.setVisibility(View.INVISIBLE);
+            placeHolderContent.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public static MoviesTabFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        AudioBooksFragment fragment = new AudioBooksFragment();
+        MoviesTabFragment fragment = new MoviesTabFragment();
         fragment.setArguments(args);
         return fragment;
     }

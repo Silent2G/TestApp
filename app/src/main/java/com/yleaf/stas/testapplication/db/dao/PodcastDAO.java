@@ -52,7 +52,7 @@ public class PodcastDAO implements DAO<Data> {
     }
 
     @Override
-    public List<Data> getAll() {
+    public ArrayList<Data> getAll() {
         Cursor cursor = sqLiteDatabase.rawQuery(
                 "select * from "
                         + Resource.Podcast.TABLE_NAME,
@@ -62,8 +62,8 @@ public class PodcastDAO implements DAO<Data> {
     }
 
     @Override
-    public List<Data> parseCursor(Cursor cursor) {
-        List<Data> podcasts = new ArrayList<>();
+    public ArrayList<Data> parseCursor(Cursor cursor) {
+        ArrayList<Data> podcasts = new ArrayList<>();
         if(cursor != null && cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndex(Resource.Podcast.ID));
@@ -97,10 +97,5 @@ public class PodcastDAO implements DAO<Data> {
             cursor.close();
         }
         return empty;
-    }
-
-    @Override
-    public List<Data> getAllByKind(String kind) {
-        return null;
     }
 }
