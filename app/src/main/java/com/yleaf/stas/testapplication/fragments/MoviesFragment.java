@@ -19,8 +19,11 @@ public class MoviesFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private DataAdapter dataAdapter;
+    private LinearLayoutManager linearLayoutManager;
     private TextView placeHolderGroupName;
     private TextView placeHolderContent;
+
+    private static int firstCurrentVisiblePosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,7 +39,8 @@ public class MoviesFragment extends Fragment {
         placeHolderContent = view.findViewById(R.id.text_view_content_movies);
 
         recyclerView = view.findViewById(R.id.recycler_view_movies);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         hidePlaceHolder();
 
@@ -51,6 +55,18 @@ public class MoviesFragment extends Fragment {
             placeHolderGroupName.setVisibility(View.INVISIBLE);
             placeHolderContent.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        firstCurrentVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        linearLayoutManager.scrollToPosition(firstCurrentVisiblePosition);
     }
 
     public static MoviesFragment newInstance() {

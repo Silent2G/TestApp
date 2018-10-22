@@ -1,13 +1,11 @@
 package com.yleaf.stas.testapplication.fragments;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +14,6 @@ import android.widget.TextView;
 import com.yleaf.stas.testapplication.R;
 import com.yleaf.stas.testapplication.adapter.DataAdapter;
 import com.yleaf.stas.testapplication.db.service.BookService;
-import com.yleaf.stas.testapplication.models.Data;
-
-import java.util.ArrayList;
 
 public class AudioBooksFragment extends Fragment {
 
@@ -28,10 +23,7 @@ public class AudioBooksFragment extends Fragment {
     private TextView placeHolderGroupName;
     private TextView placeHolderContent;
 
-    private ArrayList<Data> dataSet;
-    private Parcelable listState;
-
-    public static final String SAVED_RECYCLER_VIEW_STATUS_ID = "SAVED_RECYCLER_VIEW_STATUS_ID";
+    private static int firstCurrentVisiblePosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,8 +44,7 @@ public class AudioBooksFragment extends Fragment {
 
         hidePlaceHolder();
 
-        dataSet = new BookService(getActivity()).getAll();
-        dataAdapter = new DataAdapter(dataSet, getActivity());
+        dataAdapter = new DataAdapter(new BookService(getActivity()).getAll(), getActivity());
         recyclerView.setAdapter(dataAdapter);
 
         return view;
@@ -66,41 +57,16 @@ public class AudioBooksFragment extends Fragment {
         }
     }
 
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        listState = linearLayoutManager.onSaveInstanceState();
-//        outState.putParcelable(SAVED_RECYCLER_VIEW_STATUS_ID, listState);
-//
-//    }
-
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//
-//        if(savedInstanceState != null) {
-//            listState = savedInstanceState.getParcelable(SAVED_RECYCLER_VIEW_STATUS_ID);
-//        }
-//    }
-
     @Override
     public void onPause() {
         super.onPause();
-
-        long currentVisiblePositionFirst;
-        long currentVisiblePositionLast;
-        currentVisiblePositionFirst = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-        currentVisiblePositionLast = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-
-        Log.i("TAG", " " + currentVisiblePositionFirst + " " + currentVisiblePositionLast);
+        firstCurrentVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPosition(20);
+        linearLayoutManager.scrollToPosition(firstCurrentVisiblePosition);
     }
 
     public static AudioBooksFragment newInstance() {

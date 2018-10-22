@@ -5,7 +5,7 @@ import com.yleaf.stas.testapplication.models.JSONResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-public interface APIService {
+public interface APIServiceData {
     @GET("audiobooks/top-audiobooks/all/25/explicit.json")
     Call<JSONResponse> getAudioBooks();
 

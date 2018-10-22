@@ -20,8 +20,11 @@ public class PodcastsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private DataAdapter dataAdapter;
+    private LinearLayoutManager linearLayoutManager;
     private TextView placeHolderGroupName;
     private TextView placeHolderContent;
+
+    private static int firstCurrentVisiblePosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,7 +40,8 @@ public class PodcastsFragment extends Fragment {
         placeHolderContent = view.findViewById(R.id.text_view_content_podcasts);
 
         recyclerView = view.findViewById(R.id.recycler_view_podcasts);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         hidePlaceHolder();
 
@@ -45,6 +49,18 @@ public class PodcastsFragment extends Fragment {
         recyclerView.setAdapter(dataAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        firstCurrentVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        linearLayoutManager.scrollToPosition(firstCurrentVisiblePosition);
     }
 
     private void hidePlaceHolder() {

@@ -3,7 +3,7 @@ package com.yleaf.stas.testapplication.data;
 import android.app.Activity;
 
 import com.yleaf.stas.testapplication.models.JSONResponse;
-import com.yleaf.stas.testapplication.services.APIService;
+import com.yleaf.stas.testapplication.services.APIServiceData;
 import com.yleaf.stas.testapplication.services.RetrofitClient;
 
 import retrofit2.Call;
@@ -21,15 +21,15 @@ public class GetData {
     public void getData() {
         retrofit = RetrofitClient.getClient("https://rss.itunes.apple.com/api/v1/us/");
 
-        APIService apiService = retrofit.create(APIService.class);
+        APIServiceData apiServiceData = retrofit.create(APIServiceData.class);
 
-        Call<JSONResponse> audioBooksResponse = apiService.getAudioBooks();
+        Call<JSONResponse> audioBooksResponse = apiServiceData.getAudioBooks();
         new ParseAndStoreData(audioBooksResponse, activity).parseAndStoreData();
 
-        Call<JSONResponse> moviesResponse = apiService.getMovies();
+        Call<JSONResponse> moviesResponse = apiServiceData.getMovies();
         new ParseAndStoreData(moviesResponse, activity).parseAndStoreData();
 
-        Call<JSONResponse> podcastsResponse = apiService.getPodcasts();
+        Call<JSONResponse> podcastsResponse = apiServiceData.getPodcasts();
         new ParseAndStoreData(podcastsResponse, activity).parseAndStoreData();
     }
 }

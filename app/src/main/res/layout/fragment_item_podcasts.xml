@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.items.ItemFragmentPodcasts">
+
+    <ProgressBar
+        android:id="@+id/item_podcasts_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_centerInParent="true">
+
+    </ProgressBar>
+
+    <TextView
+        android:layout_marginTop="50dp"
+        android:id="@+id/item_podcasts_artist_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/item_podcasts_track_name"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/item_podcasts_artist_name"
+        android:text="TextView" />
+
+    <ImageView
+        android:id="@+id/item_podcasts_image_view"
+        android:layout_width="240dp"
+        android:layout_height="320dp"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/item_podcasts_track_name"
+        app:srcCompat="@android:color/holo_blue_light" />
+
+    <TextView
+        android:id="@+id/item_podcasts_release_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/item_podcasts_image_view"
+        android:text="TextView" />
+
+</RelativeLayout>

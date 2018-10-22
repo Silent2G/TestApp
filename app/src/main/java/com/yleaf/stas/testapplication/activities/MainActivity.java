@@ -13,7 +13,7 @@ import com.yleaf.stas.testapplication.R;
 import com.yleaf.stas.testapplication.data.ClearData;
 import com.yleaf.stas.testapplication.data.GetData;
 import com.yleaf.stas.testapplication.fragments.AudioBooksFragment;
-import com.yleaf.stas.testapplication.fragments.FavoriteTabFragment;
+import com.yleaf.stas.testapplication.fragments.FavoriteFragment;
 import com.yleaf.stas.testapplication.fragments.MoviesFragment;
 import com.yleaf.stas.testapplication.fragments.PodcastsFragment;
 import com.yleaf.stas.testapplication.update.CheckDate;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.navigation_favorite:
-                    selectedFragment = FavoriteTabFragment.newInstance();
+                    selectedFragment = FavoriteFragment.newInstance();
                     break;
             }
 
@@ -91,5 +91,14 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, AudioBooksFragment.newInstance());
         transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

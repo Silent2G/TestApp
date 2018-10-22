@@ -3,24 +3,24 @@ package com.yleaf.stas.testapplication.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.yleaf.stas.testapplication.R;
-import com.yleaf.stas.testapplication.adapter.DataAdapterFavorite;
-import com.yleaf.stas.testapplication.db.service.FavoriteService;
+import com.yleaf.stas.testapplication.adapter.ViewPagerAdapter;
+import com.yleaf.stas.testapplication.fragments.tabs.AudioBooksTabFragment;
+import com.yleaf.stas.testapplication.fragments.tabs.MoviesTabFragment;
+import com.yleaf.stas.testapplication.fragments.tabs.PodcastsTabFragment;
 
 public class FavoriteFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private DataAdapterFavorite dataAdapterFavorite;
-    private TextView placeHolderGroupName;
-    private TextView placeHolderContent;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    public ViewPagerAdapter viewPagerAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,27 +30,32 @@ public class FavoriteFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_favorite, container, false);
+        final View view = inflater.inflate(R.layout.fragment_favorite_tab, container, false);
 
-        placeHolderGroupName = view.findViewById(R.id.text_view_group_name_favorite);
-        placeHolderContent = view.findViewById(R.id.text_view_content_favorite);
-
-        recyclerView = view.findViewById(R.id.recycler_view_favorite);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        hidePlaceHolder();
-
-        dataAdapterFavorite = new DataAdapterFavorite(new FavoriteService(getActivity()).getAll(), getActivity());
-        recyclerView.setAdapter(dataAdapterFavorite);
+        initWidgets(view);
+        setWidgets();
 
         return view;
     }
 
-    private void hidePlaceHolder() {
-        if(!new FavoriteService(getActivity()).isEmpty()) {
-            placeHolderGroupName.setVisibility(View.INVISIBLE);
-            placeHolderContent.setVisibility(View.INVISIBLE);
-        }
+    private void initWidgets(View view) {
+        viewPager = view.findViewById(R.id.view_pager);
+        tabLayout = view.findViewById(R.id.tab_layout);
+    }
+
+    private void setWidgets() {
+        viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        setupViewPager(viewPager, viewPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public void setupViewPager(ViewPager viewPager, ViewPagerAdapter adapter) {
+
+        adapter.addFrag(AudioBooksTabFragment.newInstance(), getString(R.string.audio_books));
+        adapter.addFrag(MoviesTabFragment.newInstance(), getString(R.string.movies));
+        adapter.addFrag(PodcastsTabFragment.newInstance(), getString(R.string.podcasts));
+
+        viewPager.setAdapter(adapter);
     }
 
     public static FavoriteFragment newInstance() {
