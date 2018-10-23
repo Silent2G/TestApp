@@ -1,8 +1,6 @@
 package com.yleaf.stas.testapplication.update;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -39,8 +37,6 @@ public class CheckDate {
         calendar.setTime(new Date());
         currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
         currentYear = calendar.get(Calendar.YEAR);
-
-        Log.i("DATE", String.valueOf(currentDayOfYear + " " + savedDayOfYear + " " + currentYear + " " + savedYear));
 
         return currentDayOfYear > savedDayOfYear || currentYear > savedYear;
     }

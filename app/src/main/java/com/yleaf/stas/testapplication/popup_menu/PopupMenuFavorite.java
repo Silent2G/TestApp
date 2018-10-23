@@ -92,5 +92,4 @@ public class PopupMenuFavorite {
                 break;
         }
     }
-
 }

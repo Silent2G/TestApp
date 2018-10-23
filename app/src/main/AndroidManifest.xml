@@ -19,6 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.items.AudioBookActivity">
+        </activity>
+        <activity android:name=".activities.items.MovieActivity">
+        </activity>
+        <activity android:name=".activities.items.PodcastActivity">
+        </activity>
     </application>
 
 </manifest>

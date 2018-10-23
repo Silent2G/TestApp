@@ -1,15 +1,14 @@
-package com.yleaf.stas.testapplication.fragments.items;
+package com.yleaf.stas.testapplication.activities.items;
 
+import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,10 +29,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ItemFragmentAudioBooks extends Fragment {
+public class AudioBookActivity extends AppCompatActivity {
 
-    private static final String TAG = ItemFragmentAudioBooks.class.getSimpleName();
-    private static final String DATA_ID = "data_id";
+    private static final String TAG = AudioBookActivity.class.getSimpleName();
+    private static final String EXTRA_DATA_ID = "data_id";
     private int dataId;
     private AudioBookItem audioBookItem;
     private MediaPlayer mediaPlayer;
@@ -50,10 +49,13 @@ public class ItemFragmentAudioBooks extends Fragment {
     private ImageButton pause;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_item_audio_books);
 
-        dataId = getArguments().getInt(DATA_ID);
+        dataId = getIntent().getIntExtra(EXTRA_DATA_ID,0);
+
+        initWidgets();
 
         Call<JSONResponseAudioBook> response = new GetAudioBookItem().getAudioBookItem(dataId);
         response.enqueue(new Callback<JSONResponseAudioBook>() {
@@ -65,9 +67,6 @@ public class ItemFragmentAudioBooks extends Fragment {
                     ArrayList<AudioBookItem> results = response.body().getResults();
                     audioBookItem = results.get(0);
 
-                    Log.i(TAG, "audioBookItem artistName " + audioBookItem.getArtistName());
-
-                    //initMediaPlayer();
                     setWidgets();
                 }
             }
@@ -75,18 +74,9 @@ public class ItemFragmentAudioBooks extends Fragment {
             @Override
             public void onFailure(Call<JSONResponseAudioBook> call, Throwable t) {
                 Log.e(TAG, "onFailure: Something went wrong " + t.getMessage());
-                Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item_audio_books, container, false);
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.INVISIBLE);
-
-        initWidgets(view);
 
         play.setOnClickListener(click -> {
             if(mediaPlayer == null) {
@@ -99,19 +89,18 @@ public class ItemFragmentAudioBooks extends Fragment {
         pause.setOnClickListener(click -> mediaPlayer.pause());
         stop.setOnClickListener(click -> stopAndPrepare());
 
-        return view;
     }
 
-    private void initWidgets(View view) {
-        progressBar = view.findViewById(R.id.item_audio_books_progress_bar);
-        artistName = view.findViewById(R.id.item_audio_books_artist_name);
-        collectionName = view.findViewById(R.id.item_audio_books_collection_name);
-        imageView = view.findViewById(R.id.item_audio_books_image_view);
-        releaseDate = view.findViewById(R.id.item_audio_books_release_date);
-        description = view.findViewById(R.id.item_audio_books_description);
-        play = view.findViewById(R.id.play);
-        pause = view.findViewById(R.id.pause);
-        stop = view.findViewById(R.id.stop);
+    private void initWidgets() {
+        progressBar = findViewById(R.id.item_audio_books_progress_bar);
+        artistName = findViewById(R.id.item_audio_books_artist_name);
+        collectionName = findViewById(R.id.item_audio_books_collection_name);
+        imageView = findViewById(R.id.item_audio_books_image_view);
+        releaseDate = findViewById(R.id.item_audio_books_release_date);
+        description = findViewById(R.id.item_audio_books_description);
+        play = findViewById(R.id.play);
+        pause = findViewById(R.id.pause);
+        stop = findViewById(R.id.stop);
     }
 
     private void setWidgets() {
@@ -120,8 +109,8 @@ public class ItemFragmentAudioBooks extends Fragment {
         artistName.setText(audioBookItem.getArtistName());
         collectionName.setText(audioBookItem.getCollectionName());
 
-        Glide.with(getActivity()).load(audioBookItem.getArtworkUrl100()).into(imageView);
-        releaseDate.setText(audioBookItem.getReleaseDate());
+        Glide.with(this).load(audioBookItem.getArtworkUrl100()).into(imageView);
+        releaseDate.setText(audioBookItem.getReleaseDate().substring(0, 10));
         description.loadData(audioBookItem.getDescription(), "text/html; charset=utf-8", "utf-8");
     }
 
@@ -142,9 +131,8 @@ public class ItemFragmentAudioBooks extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+    protected void onPause() {
+        super.onPause();
 
         if(mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
@@ -152,15 +140,9 @@ public class ItemFragmentAudioBooks extends Fragment {
         }
     }
 
-    public static ItemFragmentAudioBooks newInstance(int id) {
-
-        Bundle args = new Bundle();
-        args.putInt(DATA_ID, id);
-
-        ItemFragmentAudioBooks fragment = new ItemFragmentAudioBooks();
-        fragment.setArguments(args);
-        return fragment;
+    public static Intent newIntent(Context context, int id) {
+        Intent intent = new Intent(context, AudioBookActivity.class);
+        intent.putExtra(EXTRA_DATA_ID, id);
+        return intent;
     }
-
-
 }

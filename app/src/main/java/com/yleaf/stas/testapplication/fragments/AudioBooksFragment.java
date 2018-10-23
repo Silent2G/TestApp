@@ -19,11 +19,11 @@ public class AudioBooksFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private DataAdapter dataAdapter;
-    private LinearLayoutManager linearLayoutManager;
+    public LinearLayoutManager linearLayoutManager;
     private TextView placeHolderGroupName;
     private TextView placeHolderContent;
 
-    private static int firstCurrentVisiblePosition;
+    public static int firstCurrentVisiblePosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

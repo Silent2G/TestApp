@@ -2,21 +2,18 @@ package com.yleaf.stas.testapplication.holder;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.yleaf.stas.testapplication.R;
+import com.yleaf.stas.testapplication.activities.items.AudioBookActivity;
+import com.yleaf.stas.testapplication.activities.items.MovieActivity;
+import com.yleaf.stas.testapplication.activities.items.PodcastActivity;
 import com.yleaf.stas.testapplication.adapter.DataAdapterFavorite;
-import com.yleaf.stas.testapplication.fragments.items.ItemFragmentAudioBooks;
-import com.yleaf.stas.testapplication.fragments.items.ItemFragmentMovies;
-import com.yleaf.stas.testapplication.fragments.items.ItemFragmentPodcasts;
 import com.yleaf.stas.testapplication.models.Data;
 import com.yleaf.stas.testapplication.popup_menu.PopupMenuFavorite;
 
@@ -58,34 +55,22 @@ public class DataHolderFavorite extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View view) {
-        startNewFragment();
+        startNewActivity();
     }
 
-    private void startNewFragment() {
-        FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-
+    private void startNewActivity() {
         switch (data.getKind()) {
             case "book":
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout, ItemFragmentAudioBooks.newInstance(data.getId()))
-                        .addToBackStack(null)
-                        .commit();
+                context.startActivity(AudioBookActivity.newIntent(context, data.getId()));
                 break;
 
             case "movie":
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout, ItemFragmentMovies.newInstance(data.getId()))
-                        .addToBackStack(null)
-                        .commit();
+                context.startActivity(MovieActivity.newIntent(context, data.getId()));
                 break;
 
             case "podcast":
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout, ItemFragmentPodcasts.newInstance(data.getId()))
-                        .addToBackStack(null)
-                        .commit();
+                context.startActivity(PodcastActivity.newIntent(context, data.getId()));
                 break;
         }
-
     }
 }

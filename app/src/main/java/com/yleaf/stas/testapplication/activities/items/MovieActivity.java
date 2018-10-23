@@ -1,14 +1,13 @@
-package com.yleaf.stas.testapplication.fragments.items;
+package com.yleaf.stas.testapplication.activities.items;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,12 +24,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ItemFragmentMovies extends Fragment {
+public class MovieActivity extends AppCompatActivity {
 
-    private static final String TAG = ItemFragmentMovies.class.getSimpleName();
-    private static final String DATA_ID = "data_id";
+    private static final String EXTRA_DATA_ID = "data_id";
+    private static final String TAG = MovieActivity.class.getSimpleName();
     private int dataId;
     private MovieItem movieItem;
+
 
     private ProgressBar progressBar;
     private TextView artistName;
@@ -39,12 +39,14 @@ public class ItemFragmentMovies extends Fragment {
     private TextView releaseDate;
     private TextView description;
 
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_item_movies);
 
-        dataId = getArguments().getInt(DATA_ID);
+        dataId = getIntent().getIntExtra(EXTRA_DATA_ID, 0);
+
+        initWidgets();
 
         Call<JSONResponseMovie> response = new GetMovieItem().getMovieItem(dataId);
         response.enqueue(new Callback<JSONResponseMovie>() {
@@ -56,8 +58,6 @@ public class ItemFragmentMovies extends Fragment {
                     ArrayList<MovieItem> results = response.body().getResults();
                     movieItem = results.get(0);
 
-                    Log.i(TAG, "audioBookItem artistName " + movieItem.getArtistName());
-
                     setWidgets();
                 }
             }
@@ -65,29 +65,18 @@ public class ItemFragmentMovies extends Fragment {
             @Override
             public void onFailure(Call<JSONResponseMovie> call, Throwable t) {
                 Log.e(TAG, "onFailure: Something went wrong " + t.getMessage());
-                Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item_movies, container, false);
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.INVISIBLE);
-
-        initWidgets(view);
-
-        return view;
-    }
-
-    private void initWidgets(View view) {
-        progressBar = view.findViewById(R.id.item_movies_progress_bar);
-        artistName = view.findViewById(R.id.item_movies_artist_name);
-        trackName = view.findViewById(R.id.item_movies_track_name);
-        videoView = view.findViewById(R.id.item_movies_video_view);
-        releaseDate = view.findViewById(R.id.item_movies_release_date);
-        description = view.findViewById(R.id.item_movies_description);
+    private void initWidgets() {
+        progressBar = findViewById(R.id.item_movies_progress_bar);
+        artistName = findViewById(R.id.item_movies_artist_name);
+        trackName = findViewById(R.id.item_movies_track_name);
+        videoView = findViewById(R.id.item_movies_video_view);
+        releaseDate = findViewById(R.id.item_movies_release_date);
+        description = findViewById(R.id.item_movies_description);
     }
 
     private void setWidgets() {
@@ -100,23 +89,13 @@ public class ItemFragmentMovies extends Fragment {
         videoView.setVideoURI(uri);
         videoView.start();
 
-        releaseDate.setText(movieItem.getReleaseDate());
+        releaseDate.setText(movieItem.getReleaseDate().substring(0, 10));
         description.setText(movieItem.getLongDescription());
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
-    }
-
-    public static ItemFragmentMovies newInstance(int id) {
-
-        Bundle args = new Bundle();
-        args.putInt(DATA_ID, id);
-
-        ItemFragmentMovies fragment = new ItemFragmentMovies();
-        fragment.setArguments(args);
-        return fragment;
+    public static Intent newIntent(Context context, int id) {
+        Intent intent = new Intent(context, MovieActivity.class);
+        intent.putExtra(EXTRA_DATA_ID, id);
+        return intent;
     }
 }
