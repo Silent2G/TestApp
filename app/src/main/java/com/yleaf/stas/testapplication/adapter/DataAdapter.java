@@ -12,7 +12,6 @@ import com.yleaf.stas.testapplication.holder.DataHolder;
 import com.yleaf.stas.testapplication.models.Data;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DataAdapter extends RecyclerView.Adapter<DataHolder> {
     public ArrayList<Data> dataList;

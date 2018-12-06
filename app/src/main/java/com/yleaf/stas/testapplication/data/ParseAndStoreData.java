@@ -1,21 +1,18 @@
 package com.yleaf.stas.testapplication.data;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.yleaf.stas.testapplication.R;
+import com.yleaf.stas.testapplication.activities.MainActivity;
+import com.yleaf.stas.testapplication.db.room.App;
+import com.yleaf.stas.testapplication.db.room.AppDatabase;
+import com.yleaf.stas.testapplication.db.room.DataDao;
 import com.yleaf.stas.testapplication.db.service.BookService;
 import com.yleaf.stas.testapplication.db.service.FavoriteService;
 import com.yleaf.stas.testapplication.db.service.MovieService;
 import com.yleaf.stas.testapplication.db.service.PodcastService;
-import com.yleaf.stas.testapplication.fragments.AudioBooksFragment;
 import com.yleaf.stas.testapplication.models.Data;
 import com.yleaf.stas.testapplication.models.JSONResponse;
 
@@ -31,15 +28,17 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ParseAndStoreData {
 
-    private Call<JSONResponse> jsonResponseCall;
-    private Activity activity;
-    private static final String TAG = ParseAndStoreData.class.getSimpleName();
-    private static AtomicInteger counter;
-    private ProgressBar progressBar;
 
-    public ParseAndStoreData(Call<JSONResponse> jsonResponseCall, Activity activity) {
+    public Context context;
+
+    private static final String TAG = ParseAndStoreData.class.getSimpleName();
+
+    private Call<JSONResponse> jsonResponseCall;
+    private static AtomicInteger counter;
+
+    public ParseAndStoreData(Call<JSONResponse> jsonResponseCall) {
         this.jsonResponseCall = jsonResponseCall;
-        this.activity = activity;
+        context = App.getInstance().getAppContextComponent().getContext();
     }
 
     public void parseAndStoreData() {
@@ -58,9 +57,18 @@ public class ParseAndStoreData {
                         String name = results.get(i).getName();
                         String artworkUrl100 = results.get(i).getArtworkUrl100();
 
+                        Log.i(TAG, name);
+
                         Data data = new Data(id, kind, artistName, name, artworkUrl100);
 
                         checkIfObjectInFavorite(data);
+
+//                        if(checkIsObjectStored(id)) {
+//                            AppDatabase db = App.getInstance().getDatabase();
+//                            DataDao dataDao = db.dataDao();
+//                            dataDao.insert(data);
+//                            Log.i(TAG, "ROOM INSERTED");
+//                        }
                     }
 
                     if(counter == null) {
@@ -68,7 +76,7 @@ public class ParseAndStoreData {
                     }
 
                     if(counter.incrementAndGet() == 3) {
-                        startFirstFragment();
+                        MainActivity.startFirstFragment();
                         counter = null;
 
                         saveUpdateTime();
@@ -79,40 +87,39 @@ public class ParseAndStoreData {
             @Override
             public void onFailure(Call<JSONResponse> call, Throwable t) {
                 Log.e(TAG, "onFailure: Something went wrong " + t.getMessage());
-                Toast.makeText(activity, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void startFirstFragment() {
-        progressBar = activity.findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.INVISIBLE);
 
-        FragmentTransaction transaction = ((FragmentActivity)activity).getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_layout, AudioBooksFragment.newInstance());
-        transaction.commit();
+    private boolean checkIsObjectStored(int id) {
+        AppDatabase db = App.getInstance().getDatabase();
+        DataDao dataDao = db.dataDao();
+        Data data = dataDao.getById(id);
+        return data != null;
     }
 
     private void checkIfObjectInFavorite(Data data) {
-        if(!new FavoriteService(activity).isObjectStored(data.getId())) {
+        if(!new FavoriteService(context).isObjectStored(data.getId())) {
             switch (data.getKind()) {
                 case "book":
-                    new BookService(activity).save(data);
+                    new BookService(context).save(data);
                     break;
 
                 case "movie":
-                    new MovieService(activity).save(data);
+                    new MovieService(context).save(data);
                     break;
 
                 case "podcast":
-                    new PodcastService(activity).save(data);
+                    new PodcastService(context).save(data);
                     break;
             }
         }
     }
 
     private void saveUpdateTime() {
-        SharedPreferences.Editor editor = activity.getSharedPreferences("update", MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = context.getSharedPreferences("update", MODE_PRIVATE).edit();
         Date date = new Date();
         editor.putLong("time", date.getTime());
         editor.apply();

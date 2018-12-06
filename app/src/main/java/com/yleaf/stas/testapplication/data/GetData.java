@@ -1,35 +1,65 @@
 package com.yleaf.stas.testapplication.data;
 
-import android.app.Activity;
+import android.content.Context;
 
+import com.yleaf.stas.testapplication.db.room.App;
+import com.yleaf.stas.testapplication.di.components.DaggerMainComponent;
+import com.yleaf.stas.testapplication.di.components.MainComponent;
+import com.yleaf.stas.testapplication.di.modules.ApplicationContextModule;
 import com.yleaf.stas.testapplication.models.JSONResponse;
 import com.yleaf.stas.testapplication.services.APIServiceData;
-import com.yleaf.stas.testapplication.services.RetrofitClient;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
 
 public class GetData {
 
-    private Retrofit retrofit;
-    private Activity activity;
+    public Context context;
 
-    public GetData(Activity activity) {
-        this.activity = activity;
+    public GetData() {
+        context = App.getInstance().getAppContextComponent().getContext();
     }
 
     public void getData() {
-        retrofit = RetrofitClient.getClient("https://rss.itunes.apple.com/api/v1/us/");
 
-        APIServiceData apiServiceData = retrofit.create(APIServiceData.class);
+        MainComponent daggerMainComponent = DaggerMainComponent.builder()
+                .applicationContextModule(new ApplicationContextModule(context))
+                .build();
 
+        APIServiceData apiServiceData = daggerMainComponent.getApiServiceData();
+
+//        apiServiceData.getAudioBooks()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Call<JSONResponse>>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                        Log.i("TAGAGAGAG", "onSubscribe()");
+//                    }
+//
+//                    @Override
+//                    public void onNext(Call<JSONResponse> jsonResponseCall) {
+//                        new ParseAndStoreData(jsonResponseCall , context).parseAndStoreData();
+//                        Log.i("TAGAGAGAG", "onNext()");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        Log.i("TAGAGAGAG", "onComplete()");
+//                    }
+//                });
+//
         Call<JSONResponse> audioBooksResponse = apiServiceData.getAudioBooks();
-        new ParseAndStoreData(audioBooksResponse, activity).parseAndStoreData();
+        new ParseAndStoreData(audioBooksResponse).parseAndStoreData();
 
         Call<JSONResponse> moviesResponse = apiServiceData.getMovies();
-        new ParseAndStoreData(moviesResponse, activity).parseAndStoreData();
+        new ParseAndStoreData(moviesResponse).parseAndStoreData();
 
         Call<JSONResponse> podcastsResponse = apiServiceData.getPodcasts();
-        new ParseAndStoreData(podcastsResponse, activity).parseAndStoreData();
+        new ParseAndStoreData(podcastsResponse).parseAndStoreData();
     }
 }

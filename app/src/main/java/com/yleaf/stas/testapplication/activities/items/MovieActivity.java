@@ -14,15 +14,18 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.yleaf.stas.testapplication.R;
-import com.yleaf.stas.testapplication.data.items.GetMovieItem;
 import com.yleaf.stas.testapplication.models.items.MovieItem;
 import com.yleaf.stas.testapplication.models.items_response.JSONResponseMovie;
+import com.yleaf.stas.testapplication.services.APIServiceItem;
+import com.yleaf.stas.testapplication.services.RetrofitClient;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MovieActivity extends AppCompatActivity {
 
@@ -30,7 +33,7 @@ public class MovieActivity extends AppCompatActivity {
     private static final String TAG = MovieActivity.class.getSimpleName();
     private int dataId;
     private MovieItem movieItem;
-
+    private Retrofit retrofit;
 
     private ProgressBar progressBar;
     private TextView artistName;
@@ -48,7 +51,13 @@ public class MovieActivity extends AppCompatActivity {
 
         initWidgets();
 
-        Call<JSONResponseMovie> response = new GetMovieItem().getMovieItem(dataId);
+        File cacheFile = new File(this.getCacheDir(), "HttpCache");
+        cacheFile.mkdirs();
+
+        retrofit = RetrofitClient.getClient(cacheFile, "http://itunes.apple.com/");
+        APIServiceItem apiServiceItem = retrofit.create(APIServiceItem.class);
+
+        Call<JSONResponseMovie> response = apiServiceItem.getItemMovie(dataId);
         response.enqueue(new Callback<JSONResponseMovie>() {
             @Override
             public void onResponse(Call<JSONResponseMovie> call, Response<JSONResponseMovie> response) {

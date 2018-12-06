@@ -1,17 +1,25 @@
 package com.yleaf.stas.testapplication.update;
 
-import android.app.Activity;
+import android.content.Context;
+
+import com.yleaf.stas.testapplication.db.room.App;
+import com.yleaf.stas.testapplication.di.annotations.ApplicationContext;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class CheckDate {
-    private Activity activity;
 
-    public CheckDate(Activity activity) {
-        this.activity = activity;
+    @ApplicationContext
+    @Inject
+    public Context context;
+
+    public CheckDate() {
+        App.getInstance().getAppContextComponent().inject(this);
     }
 
     public boolean isTodayNewDay() {
@@ -23,7 +31,7 @@ public class CheckDate {
         int currentYear;
 
         long milliseconds;
-        milliseconds = activity.getSharedPreferences("update", MODE_PRIVATE).getLong("time", 0);
+        milliseconds = context.getSharedPreferences("update", MODE_PRIVATE).getLong("time", 0);
 
         if(milliseconds == 0)
             return true;

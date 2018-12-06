@@ -8,7 +8,6 @@ import com.yleaf.stas.testapplication.db.service.core.Service;
 import com.yleaf.stas.testapplication.models.Data;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PodcastService extends OpenDBService implements Service<Data> {
 

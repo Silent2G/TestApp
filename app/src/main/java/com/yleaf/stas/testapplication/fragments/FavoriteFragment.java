@@ -19,8 +19,10 @@ import com.yleaf.stas.testapplication.fragments.tabs.PodcastsTabFragment;
 public class FavoriteFragment extends Fragment {
 
     private ViewPager viewPager;
-    private TabLayout tabLayout;
+    public TabLayout tabLayout;
     public ViewPagerAdapter viewPagerAdapter;
+
+    public static int index;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class FavoriteFragment extends Fragment {
         viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
         setupViewPager(viewPager, viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+        TabLayout.Tab tab = tabLayout.getTabAt(index);
+        tab.select();
     }
 
     public void setupViewPager(ViewPager viewPager, ViewPagerAdapter adapter) {

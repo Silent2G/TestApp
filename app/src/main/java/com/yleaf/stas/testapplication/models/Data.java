@@ -1,25 +1,38 @@
 package com.yleaf.stas.testapplication.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity
 public class Data implements Parcelable {
+
+    @PrimaryKey
     @SerializedName("id")
-    int id;
+    @Expose
+    private int id;
 
     @SerializedName("kind")
-    String kind;
+    @Expose
+    private String kind;
 
     @SerializedName("artistName")
-    String artistName;
+    @Expose
+    private String artistName;
 
     @SerializedName("name")
-    String name;
+    @Expose
+    private String name;
 
     @SerializedName("artworkUrl100")
-    String artworkUrl100;
+    @Expose
+    private String artworkUrl100;
+
+    private boolean favorite;
 
     public Data(int id, String kind, String artistName, String name, String artworkUrl100) {
         this.id = id;
@@ -27,6 +40,7 @@ public class Data implements Parcelable {
         this.artistName = artistName;
         this.name = name;
         this.artworkUrl100 = artworkUrl100;
+        this.favorite = false;
     }
 
     public Data(Parcel parcel) {
@@ -35,6 +49,7 @@ public class Data implements Parcelable {
         this.artistName = parcel.readString();
         this.name = parcel.readString();
         this.artworkUrl100 = parcel.readString();
+        this.favorite = parcel.readByte() != 0;
     }
 
     @Override
@@ -49,6 +64,7 @@ public class Data implements Parcelable {
         parcel.writeString(this.artistName);
         parcel.writeString(this.name);
         parcel.writeString(this.artworkUrl100);
+        parcel.writeByte((byte) (this.favorite ? 1 : 0));
     }
 
     public static final Creator<Data> CREATOR = new Creator<Data>() {
@@ -101,5 +117,13 @@ public class Data implements Parcelable {
 
     public void setArtworkUrl100(String artworkUrl100) {
         this.artworkUrl100 = artworkUrl100;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

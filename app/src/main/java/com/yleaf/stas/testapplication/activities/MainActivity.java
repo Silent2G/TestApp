@@ -2,6 +2,7 @@ package com.yleaf.stas.testapplication.activities;
 
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 import com.yleaf.stas.testapplication.R;
 import com.yleaf.stas.testapplication.data.ClearData;
 import com.yleaf.stas.testapplication.data.GetData;
+
 import com.yleaf.stas.testapplication.fragments.AudioBooksFragment;
 import com.yleaf.stas.testapplication.fragments.FavoriteFragment;
 import com.yleaf.stas.testapplication.fragments.MoviesFragment;
@@ -35,9 +37,10 @@ public class MainActivity extends AppCompatActivity {
     private static HashMap<Integer, Pair> historyContainer = new HashMap<>();
     private static int historyCounter = 0;
 
-    private ProgressBar progressBar;
+    private static ProgressBar progressBar;
+    private static FragmentManager fragmentManager;
 
-    Fragment selectedFragment = null;
+    static Fragment selectedFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
 
+        fragmentManager = getSupportFragmentManager();
+
         if(savedInstanceState == null) {
-            if(new CheckDate(this).isTodayNewDay() && new CheckIsOnline(this).isOnline()) {
-                new ClearData(getApplicationContext()).clearData();
-                new GetData(this).getData();
+            if(new CheckDate().isTodayNewDay() && new CheckIsOnline().isOnline()) {
+                new ClearData().clearData();
+                new GetData().getData();
             } else {
                 startFirstFragment();
             }
@@ -83,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
             progressBar.setVisibility(View.INVISIBLE);
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.frame_layout, selectedFragment);
             transaction.commit();
 
@@ -96,10 +101,10 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
     }
 
-    private void startFirstFragment() {
+    public static void startFirstFragment() {
         progressBar.setVisibility(View.INVISIBLE);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frame_layout, selectedFragment = AudioBooksFragment.newInstance());
         transaction.commit();
     }
@@ -130,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
                 historyContainer.put(counter, new Pair("Podcasts", getPosition()));
                 break;
             case "Favorite":
-                historyContainer.put(counter, new Pair("Favorite", 0));
+                historyContainer.put(counter, new Pair("Favorite", getPosition()));
+                Log.i(TAG, ((FavoriteFragment)selectedFragment).tabLayout.getSelectedTabPosition() + " tab position");
                 break;
         }
     }
@@ -146,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             return ((PodcastsFragment)selectedFragment).linearLayoutManager.findFirstCompletelyVisibleItemPosition();
         }
         if(selectedFragment instanceof FavoriteFragment) {
-            return 0;
+            return ((FavoriteFragment)selectedFragment).tabLayout.getSelectedTabPosition();
         }
         return 0;
     }
@@ -187,7 +193,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case "Favorite":
-                    transaction.replace(R.id.frame_layout, selectedFragment = FavoriteFragment.newInstance());
+                    FavoriteFragment favoriteFragment = FavoriteFragment.newInstance();
+                    FavoriteFragment.index = pair.getFirstVisiblePositionNumber();
+                    transaction.replace(R.id.frame_layout, selectedFragment = favoriteFragment);
                     transaction.commit();
                     bottomNavigationView.getMenu().getItem(3).setChecked(true);
             }

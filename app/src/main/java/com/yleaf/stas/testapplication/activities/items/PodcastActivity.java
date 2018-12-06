@@ -14,15 +14,18 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.yleaf.stas.testapplication.R;
-import com.yleaf.stas.testapplication.data.items.GetPodcastItem;
 import com.yleaf.stas.testapplication.models.items.PodcastItem;
 import com.yleaf.stas.testapplication.models.items_response.JSONResponsePodcast;
+import com.yleaf.stas.testapplication.services.APIServiceItem;
+import com.yleaf.stas.testapplication.services.RetrofitClient;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class PodcastActivity extends AppCompatActivity {
 
@@ -30,7 +33,7 @@ public class PodcastActivity extends AppCompatActivity {
     private static final String TAG = PodcastActivity.class.getSimpleName();
     private int dataId;
     private PodcastItem podcastItem;
-
+    private Retrofit retrofit;
 
     private ProgressBar progressBar;
     private TextView artistName;
@@ -47,7 +50,13 @@ public class PodcastActivity extends AppCompatActivity {
 
         initWidgets();
 
-        Call<JSONResponsePodcast> response = new GetPodcastItem().getPodcastItem(dataId);
+        File cacheFile = new File(this.getCacheDir(), "HttpCache");
+        cacheFile.mkdirs();
+
+        retrofit = RetrofitClient.getClient(cacheFile, "http://itunes.apple.com/");
+        APIServiceItem apiServiceItem = retrofit.create(APIServiceItem.class);
+
+        Call<JSONResponsePodcast> response = apiServiceItem.getItemPodcast(dataId);
 
         response.enqueue(new Callback<JSONResponsePodcast>() {
             @Override

@@ -21,6 +21,9 @@ public class AudioBooksTabFragment extends Fragment {
     private DataAdapterFavorite dataAdapterFavorite;
     private TextView placeHolderGroupName;
     private TextView placeHolderContent;
+    public LinearLayoutManager linearLayoutManager;
+
+    public static int firstCurrentVisiblePosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,7 +39,8 @@ public class AudioBooksTabFragment extends Fragment {
         placeHolderContent = view.findViewById(R.id.text_view_content_audio_books);
 
         recyclerView = view.findViewById(R.id.recycler_view_audio_books);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         hidePlaceHolder();
 
@@ -53,6 +57,18 @@ public class AudioBooksTabFragment extends Fragment {
             placeHolderGroupName.setVisibility(View.INVISIBLE);
             placeHolderContent.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        firstCurrentVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        linearLayoutManager.scrollToPosition(firstCurrentVisiblePosition);
     }
 
     public static AudioBooksTabFragment newInstance() {

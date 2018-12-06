@@ -18,16 +18,19 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.yleaf.stas.testapplication.R;
-import com.yleaf.stas.testapplication.data.items.GetAudioBookItem;
 import com.yleaf.stas.testapplication.models.items.AudioBookItem;
 import com.yleaf.stas.testapplication.models.items_response.JSONResponseAudioBook;
+import com.yleaf.stas.testapplication.services.APIServiceItem;
+import com.yleaf.stas.testapplication.services.RetrofitClient;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class AudioBookActivity extends AppCompatActivity {
 
@@ -36,6 +39,7 @@ public class AudioBookActivity extends AppCompatActivity {
     private int dataId;
     private AudioBookItem audioBookItem;
     private MediaPlayer mediaPlayer;
+    private Retrofit retrofit;
 
     private ProgressBar progressBar;
     private TextView artistName;
@@ -57,7 +61,13 @@ public class AudioBookActivity extends AppCompatActivity {
 
         initWidgets();
 
-        Call<JSONResponseAudioBook> response = new GetAudioBookItem().getAudioBookItem(dataId);
+        File cacheFile = new File(this.getCacheDir(), "HttpCache");
+        cacheFile.mkdirs();
+
+        retrofit = RetrofitClient.getClient(cacheFile, "http://itunes.apple.com/");
+        APIServiceItem apiServiceItem = retrofit.create(APIServiceItem.class);
+
+        Call<JSONResponseAudioBook> response = apiServiceItem.getItemAudioBook(dataId);
         response.enqueue(new Callback<JSONResponseAudioBook>() {
             @Override
             public void onResponse(Call<JSONResponseAudioBook> call, Response<JSONResponseAudioBook> response) {

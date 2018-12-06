@@ -5,10 +5,13 @@ import android.content.Context;
 import com.yleaf.stas.testapplication.db.dao.BookDAO;
 import com.yleaf.stas.testapplication.db.service.core.OpenDBService;
 import com.yleaf.stas.testapplication.db.service.core.Service;
+import com.yleaf.stas.testapplication.di.annotations.ApplicationContext;
 import com.yleaf.stas.testapplication.models.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class BookService extends OpenDBService implements Service<Data> {
 

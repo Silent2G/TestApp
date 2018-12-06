@@ -1,3 +1,4 @@
+
 package com.yleaf.stas.testapplication.db.dao.core;
 
 import android.database.Cursor;

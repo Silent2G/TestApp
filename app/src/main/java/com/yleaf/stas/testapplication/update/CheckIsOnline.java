@@ -1,20 +1,27 @@
 package com.yleaf.stas.testapplication.update;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class CheckIsOnline {
-    private Activity activity;
+import com.yleaf.stas.testapplication.db.room.App;
+import com.yleaf.stas.testapplication.di.annotations.ApplicationContext;
 
-    public CheckIsOnline(Activity activity) {
-        this.activity = activity;
+import javax.inject.Inject;
+
+public class CheckIsOnline {
+
+    @ApplicationContext
+    @Inject
+    public Context context;
+
+    public CheckIsOnline() {
+        App.getInstance().getAppContextComponent().inject(this);
     }
 
     public boolean isOnline() {
         ConnectivityManager cm =
-                (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
